@@ -48,7 +48,6 @@ fn main() {
     // FIXME handle emtpy pipes
     // read input from pipe
     let input = read_pipe();
-    println!("INPUT: {}", input);
 
     // handle arguments
     let matches = manipulate_pipe().get_matches();
@@ -75,13 +74,13 @@ fn main() {
 
             // replace old pattern with new pattern
             let output = find_replace(input, old_pattern, new_pattern, num_flag);
-            println!("OUTPUT: {}", output);
+            println!("{}", output);
         } else {
             let re = Regex::new(args[0]).unwrap();
             let new_pattern = args[1].as_str();
 
             let output = find_replace_regex(input, re, new_pattern, num_flag);
-            println!("OUTPUT: {}", output);
+            println!("{}", output);
         }
     } else {
         // handle commands
