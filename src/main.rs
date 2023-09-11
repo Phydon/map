@@ -104,7 +104,7 @@ fn main() {
 // build cli
 fn manipulate_pipe() -> Command {
     Command::new("map")
-        .bin_name("wf")
+        .bin_name("map")
         .before_help(format!(
             "{}\n{}",
             "MAP".bold().truecolor(250, 0, 104),
@@ -116,14 +116,19 @@ fn manipulate_pipe() -> Command {
             "MAP".bold().truecolor(250, 0, 104),
             "Leann Phydon <leann.phydon@gmail.com>".italic().dimmed()
         ))
-        .long_about(format!("{}", "Manipulate pipes",))
+        .long_about(format!(
+            "{}\n\n- {}\n\t{}",
+            "Manipulate pipes",
+            "Regex syntax:",
+            "https://docs.rs/regex/latest/regex/#untrusted-input"
+        ))
         // TODO update version
         .version("1.0.0")
         .author("Leann Phydon <leann.phydon@gmail.com>")
         .arg_required_else_help(true)
         .arg(
             Arg::new("args")
-                .help("Replace the old pattern with the new pattern")
+                .help("Replace a pattern with a new one")
                 .action(ArgAction::Set)
                 .num_args(2)
                 .value_names(["OLD_PATTERN", "NEW_PATTERN"]),
@@ -133,10 +138,9 @@ fn manipulate_pipe() -> Command {
                 .short('n')
                 .long("num")
                 .help("Replaces first N matches of a pattern with another string")
-                .long_help(format!("{}\n{}", "Replaces first N matches of a pattern with another string", "If N is negativ, it replaces in reversed order, starting from the last matching pattern"))
                 .action(ArgAction::Set)
                 .num_args(1)
-                .value_name("NUMBER")
+                .value_name("NUMBER"),
         )
         .arg(
             Arg::new("string")
