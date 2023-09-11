@@ -7,8 +7,9 @@ edition = "2021"
 
 [dependencies]
 clap = "4.4.2"
-owo-colors = "3.5"
-flexi_logger = "0.26"
-log = "0.4"
 ctrlc = "3.4.1"
 dirs ="5"
+flexi_logger = "0.26"
+log = "0.4"
+owo-colors = "3.5"
+regex = "1.9.5"

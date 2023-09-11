@@ -1,7 +1,8 @@
 use clap::{Arg, ArgAction, Command};
 use flexi_logger::{detailed_format, Duplicate, FileSpec, Logger};
-use log::error;
+use log::{error, warn};
 use owo_colors::colored::*;
+use regex::Regex;
 
 use std::{
     fs,
@@ -57,30 +58,30 @@ fn main() {
         .get_many::<String>("args")
         .map(|a| a.collect::<Vec<_>>())
     {
-        // TODO add Regex flag
-
-        let mut old_pattern = String::new();
-        let mut new_pattern = String::new();
-
-        if string_flag {
-            // replace old pattern with new pattern
-            old_pattern.push_str(args[0].as_str());
-            new_pattern.push_str(args[1].as_str());
-
-            let mut num_flag: i32 = 0;
-            if let Some(n) = matches.get_one::<String>("num") {
-                match n.parse::<i32>() {
-                    Ok(num) => num_flag = num,
-                    Err(err) => {
-                        error!("Expected an integer for the number of matching patterns: {err}");
-                        process::exit(1);
-                    }
+        let mut num_flag: u32 = 0;
+        if let Some(n) = matches.get_one::<String>("num") {
+            match n.parse::<u32>() {
+                Ok(num) => num_flag = num,
+                Err(err) => {
+                    warn!("Expected an integer for the number of matching patterns: {err}");
+                    process::exit(1);
                 }
             }
+        }
+
+        if string_flag {
+            let old_pattern = String::from(args[0]);
+            let new_pattern = String::from(args[1]);
+
+            // replace old pattern with new pattern
             let output = find_replace(input, old_pattern, new_pattern, num_flag);
             println!("OUTPUT: {}", output);
         } else {
-            todo!("regex not implemented yet");
+            let re = Regex::new(args[0]).unwrap();
+            let new_pattern = args[1].as_str();
+
+            let output = find_replace_regex(input, re, new_pattern, num_flag);
+            println!("OUTPUT: {}", output);
         }
     } else {
         // handle commands
@@ -164,14 +165,17 @@ fn read_pipe() -> String {
     input
 }
 
-fn find_replace(input: String, old_pattern: String, new_pattern: String, num_flag: i32) -> String {
+fn find_replace(input: String, old_pattern: String, new_pattern: String, num_flag: u32) -> String {
     if num_flag == 0 {
         input.replace(&old_pattern, &new_pattern)
-    } else if num_flag < 0 {
-        todo!("reverse input, old and new");
     } else {
         input.replacen(&old_pattern, &new_pattern, num_flag as usize)
     }
+}
+
+fn find_replace_regex(input: String, re: Regex, new_pattern: &str, num_flag: u32) -> String {
+    let result = re.replacen(&input, num_flag as usize, new_pattern);
+    result.to_string()
 }
 
 fn check_create_config_dir() -> io::Result<PathBuf> {

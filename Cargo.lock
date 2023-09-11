@@ -332,6 +332,7 @@ dependencies = [
  "flexi_logger",
  "log",
  "owo-colors",
+ "regex",
 ]
 
 [[package]]
