@@ -66,12 +66,22 @@ fn main() {
             // replace old pattern with new pattern
             old_pattern.push_str(args[0].as_str());
             new_pattern.push_str(args[1].as_str());
+
+            let mut num_flag: i32 = 0;
+            if let Some(n) = matches.get_one::<String>("num") {
+                match n.parse::<i32>() {
+                    Ok(num) => num_flag = num,
+                    Err(err) => {
+                        error!("Expected an integer for the number of matching patterns: {err}");
+                        process::exit(1);
+                    }
+                }
+            }
+            let output = find_replace(input, old_pattern, new_pattern, num_flag);
+            println!("OUTPUT: {}", output);
         } else {
             todo!("regex not implemented yet");
         }
-
-        let output = find_replace(input, old_pattern, new_pattern);
-        println!("OUTPUT: {}", output);
     } else {
         // handle commands
         match matches.subcommand() {
@@ -119,6 +129,16 @@ fn manipulate_pipe() -> Command {
                 .value_names(["OLD_PATTERN", "NEW_PATTERN"]),
         )
         .arg(
+            Arg::new("num")
+                .short('n')
+                .long("num")
+                .help("Replaces first N matches of a pattern with another string")
+                .long_help(format!("{}\n{}", "Replaces first N matches of a pattern with another string", "If N is negativ, it replaces in reversed order, starting from the last matching pattern"))
+                .action(ArgAction::Set)
+                .num_args(1)
+                .value_name("NUMBER")
+        )
+        .arg(
             Arg::new("string")
                 .short('s')
                 .long("string")
@@ -144,8 +164,14 @@ fn read_pipe() -> String {
     input
 }
 
-fn find_replace(input: String, old_pattern: String, new_pattern: String) -> String {
-    input.replace(&old_pattern, &new_pattern)
+fn find_replace(input: String, old_pattern: String, new_pattern: String, num_flag: i32) -> String {
+    if num_flag == 0 {
+        input.replace(&old_pattern, &new_pattern)
+    } else if num_flag < 0 {
+        todo!("reverse input, old and new");
+    } else {
+        input.replacen(&old_pattern, &new_pattern, num_flag as usize)
+    }
 }
 
 fn check_create_config_dir() -> io::Result<PathBuf> {
