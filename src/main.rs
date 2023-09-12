@@ -45,9 +45,6 @@ fn main() {
         .start()
         .unwrap();
 
-    // read input from pipe
-    let input = read_pipe();
-
     // handle arguments
     let matches = manipulate_pipe().get_matches();
     let string_flag = matches.get_flag("string");
@@ -66,6 +63,9 @@ fn main() {
                 }
             }
         }
+
+        // read input from pipe
+        let input = read_pipe();
 
         if string_flag {
             // Treat the pattern as a literal string
@@ -111,7 +111,7 @@ fn manipulate_pipe() -> Command {
             "MAP".bold().truecolor(250, 0, 104),
             "Leann Phydon <leann.phydon@gmail.com>".italic().dimmed()
         ))
-        .about("Manipulate pipes")
+        .about("MAnipulate Pipes")
         .before_long_help(format!(
             "{}\n{}",
             "MAP".bold().truecolor(250, 0, 104),
@@ -119,9 +119,7 @@ fn manipulate_pipe() -> Command {
         ))
         .long_about(format!(
             "{}\n\n- {}\n\t{}",
-            "Manipulate pipes",
-            "Regex syntax:",
-            "https://docs.rs/regex/latest/regex/#untrusted-input"
+            "MAnipulate Pipes", "Regex syntax:", "https://docs.rs/regex/latest/regex/#syntax"
         ))
         // TODO update version
         .version("1.0.0")
