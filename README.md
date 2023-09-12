@@ -6,6 +6,19 @@
 
 a better version of this program is ![sd](https://github.com/chmln/sd)
 
+## Examples
+
+todo: add easy examples
+
+
+search all rust files in the current directory with ![sf](https://github.com/Phydon/sf)
+
+![screenshot](https://github.com/Phydon/map/blob/master/assets/sf_all_rust_files.png)
+
+extract the file names from the search results
+
+![screenshot](https://github.com/Phydon/map/blob/master/assets/sf_map_extract_file_names_from_search_results.png)
+
 ## Usage
 
 ### Short Usage
