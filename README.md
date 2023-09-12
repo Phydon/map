@@ -10,6 +10,7 @@ a better version of this program is ![sd](https://github.com/chmln/sd)
 
 todo: add easy examples
 
+### multiline input
 
 search all rust files in the current directory with ![sf](https://github.com/Phydon/sf)
 
