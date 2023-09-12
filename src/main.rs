@@ -45,7 +45,6 @@ fn main() {
         .start()
         .unwrap();
 
-    // FIXME handle emtpy pipes
     // read input from pipe
     let input = read_pipe();
 
@@ -69,13 +68,15 @@ fn main() {
         }
 
         if string_flag {
+            // Treat the pattern as a literal string
             let old_pattern = String::from(args[0]);
             let new_pattern = String::from(args[1]);
 
             // replace old pattern with new pattern
-            let output = find_replace(input, old_pattern, new_pattern, num_flag);
+            let output = find_replace_string(input, old_pattern, new_pattern, num_flag);
             println!("{}", output);
         } else {
+            // Treat the pattern as a regex
             let re = Regex::new(args[0]).unwrap();
             let new_pattern = args[1].as_str();
 
@@ -158,17 +159,24 @@ fn manipulate_pipe() -> Command {
 }
 
 fn read_pipe() -> String {
-    // FIXME handle emtpy stdin when locked
-    let input = io::stdin()
-        // TODO lock here?
+    let mut input = io::stdin()
         .lock()
         .lines()
-        .fold("".to_string(), |acc, line| acc + &line.unwrap());
+        .fold("".to_string(), |acc, line| acc + &line.unwrap() + "\n");
+
+    // TODO possible error here?
+    // TODO if last char is '\n' it will get removed
+    let _ = input.pop();
 
     input
 }
 
-fn find_replace(input: String, old_pattern: String, new_pattern: String, num_flag: u32) -> String {
+fn find_replace_string(
+    input: String,
+    old_pattern: String,
+    new_pattern: String,
+    num_flag: u32,
+) -> String {
     if num_flag == 0 {
         input.replace(&old_pattern, &new_pattern)
     } else {
