@@ -1,4 +1,4 @@
-# map
+# 🔧🔀 map
 
 **MA**nipulate **P**ipe
 
@@ -28,8 +28,9 @@ extract the file names from the search results
 Usage: map [OPTIONS] [OLD_PATTERN] [NEW_PATTERN] [COMMAND]
 
 Commands:
-  log, -L, --log  Show content of the log file
-  help            Print this message or the help of the given subcommand(s)
+  log, -L, --log        Show content of the log file
+  syntax, -S, --syntax  Show regex syntax information
+  help                  Print this message or the help of the given subcommand(s)
 
 Arguments:
   [OLD_PATTERN] [NEW_PATTERN]  Replace a pattern with a new one
@@ -47,8 +48,9 @@ Options:
 Usage: map [OPTIONS] [OLD_PATTERN] [NEW_PATTERN] [COMMAND]
 
 Commands:
-  log, -L, --log  Show content of the log file
-  help            Print this message or the help of the given subcommand(s)
+  log, -L, --log        Show content of the log file
+  syntax, -S, --syntax  Show regex syntax information
+  help                  Print this message or the help of the given subcommand(s)
 
 Arguments:
   [OLD_PATTERN] [NEW_PATTERN]
