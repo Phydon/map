@@ -107,7 +107,7 @@ fn main() {
                 show_regex_syntax();
             }
             _ => {
-                // FIXME it is reachable
+                // FIXME it is reachable -> still?
                 unreachable!();
             }
         }
@@ -214,11 +214,12 @@ fn read_pipe() -> String {
 }
 
 fn cut(input: String, selection: String) -> String {
-    let selector = check_cut_selection(selection);
+    let selector = parse_selection(selection);
     let splitted_input: Vec<&str> = input.split_ascii_whitespace().collect();
 
     let max_selection = *selector.iter().max().unwrap();
     let len_input = splitted_input.len() as u32;
+
     if len_input <= max_selection {
         warn!(
             "{}",
@@ -239,7 +240,7 @@ fn cut(input: String, selection: String) -> String {
     cut_string.join(" ")
 }
 
-fn check_cut_selection(selection: String) -> Vec<u32> {
+fn parse_selection(selection: String) -> Vec<u32> {
     let selector: Vec<u32> = selection
         .split_ascii_whitespace()
         .map(|it| it.parse::<u32>().expect("Argument must be of type u32"))
