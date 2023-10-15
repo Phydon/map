@@ -49,7 +49,15 @@ fn main() {
     let matches = manipulate_pipe().get_matches();
     let string_flag = matches.get_flag("string");
 
-    if let Some(args) = matches
+    if let Some(subcmd) = matches.subcommand_matches("cut") {
+        if let Some(arg) = subcmd.get_one::<String>("subarg") {
+            // read input from pipe
+            let input = read_pipe();
+
+            let output = cut(input, arg.to_owned());
+            println!("{}", output);
+        }
+    } else if let Some(args) = matches
         .get_many::<String>("args")
         .map(|a| a.collect::<Vec<_>>())
     {
@@ -99,6 +107,7 @@ fn main() {
                 show_regex_syntax();
             }
             _ => {
+                // FIXME it is reachable
                 unreachable!();
             }
         }
@@ -125,7 +134,7 @@ fn manipulate_pipe() -> Command {
             "MAnipulate Pipes", "Regex syntax:", "https://docs.rs/regex/latest/regex/#syntax"
         ))
         // TODO update version
-        .version("1.1.0")
+        .version("1.2.0")
         .author("Leann Phydon <leann.phydon@gmail.com>")
         .arg_required_else_help(true)
         .arg(
@@ -152,6 +161,32 @@ fn manipulate_pipe() -> Command {
                 .action(ArgAction::SetTrue),
         )
         .subcommand(
+            Command::new("cut")
+                .short_flag('c')
+                .long_flag("cut")
+                .about("Select relevant parts from the input")
+                .long_about(format!(
+                    "{}\n{}\n{}",
+                    "Select relevant parts from the input",
+                    "Choose words by there indices",
+                    "Indices must be space separated"
+                ))
+                .arg_required_else_help(true)
+                .arg(
+                    Arg::new("subarg")
+                        .help("Space separated indices of relevant selections")
+                        .long_help(format!(
+                            "{}\n{}\n{}",
+                            "Space separated indices of relevant selections",
+                            "For example: '0 3 4'",
+                            "Selects the first, the third and the forth word from a given input"
+                        ))
+                        .action(ArgAction::Set)
+                        .num_args(1)
+                        .value_name("SELECTIONS"),
+                ),
+        )
+        .subcommand(
             Command::new("log")
                 .short_flag('L')
                 .long_flag("log")
@@ -175,7 +210,32 @@ fn read_pipe() -> String {
     // TODO if last char is '\n' it will get removed
     let _ = input.pop();
 
-    input
+    input.trim().to_string()
+}
+
+fn cut(input: String, selection: String) -> String {
+    let selector = check_cut_selection(selection);
+
+    let splitted_input: Vec<&str> = input.split_ascii_whitespace().collect();
+
+    assert!(splitted_input.len() as u32 > *selector.iter().max().unwrap());
+
+    let mut cut_string: Vec<&str> = Vec::new();
+
+    for i in selector {
+        cut_string.push(splitted_input[i as usize]);
+    }
+
+    cut_string.join(" ")
+}
+
+fn check_cut_selection(selection: String) -> Vec<u32> {
+    let selector: Vec<u32> = selection
+        .split_ascii_whitespace()
+        .map(|it| it.parse::<u32>().expect("Argument must be of type u32"))
+        .collect();
+
+    selector
 }
 
 fn find_replace_string(
