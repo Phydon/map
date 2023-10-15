@@ -67,7 +67,7 @@ fn main() {
                 Ok(num) => num_flag = num,
                 Err(err) => {
                     warn!("Expected an integer for the number of matching patterns: {err}");
-                    process::exit(1);
+                    process::exit(0);
                 }
             }
         }
@@ -214,6 +214,10 @@ fn read_pipe() -> String {
 }
 
 fn cut(input: String, selection: String) -> String {
+    if selection.is_empty() {
+        return input;
+    }
+
     let selector = parse_selection(selection);
     let splitted_input: Vec<&str> = input.split_ascii_whitespace().collect();
 
@@ -243,7 +247,12 @@ fn cut(input: String, selection: String) -> String {
 fn parse_selection(selection: String) -> Vec<u32> {
     let selector: Vec<u32> = selection
         .split_ascii_whitespace()
-        .map(|it| it.parse::<u32>().expect("Argument must be of type u32"))
+        .map(|it| {
+            it.parse::<u32>().unwrap_or_else(|err| {
+                warn!("Argument must be of type u32: {err}");
+                process::exit(0);
+            })
+        })
         .collect();
 
     selector
