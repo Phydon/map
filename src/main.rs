@@ -107,8 +107,8 @@ fn main() {
                 show_regex_syntax();
             }
             _ => {
-                // FIXME it is reachable -> still?
-                unreachable!();
+                let _ = manipulate_pipe().print_help();
+                process::exit(0);
             }
         }
     }
@@ -134,7 +134,7 @@ fn manipulate_pipe() -> Command {
             "MAnipulate Pipes", "Regex syntax:", "https://docs.rs/regex/latest/regex/#syntax"
         ))
         // TODO update version
-        .version("1.2.2")
+        .version("1.2.3")
         .author("Leann Phydon <leann.phydon@gmail.com>")
         .arg_required_else_help(true)
         .arg(
@@ -149,6 +149,11 @@ fn manipulate_pipe() -> Command {
                 .short('n')
                 .long("num")
                 .help("Replaces first N matches of a pattern with another string")
+                .long_help(format!(
+                    "{}\n{}",
+                    "Replaces first N matches of a pattern with another string",
+                    "Must be used together with a regex or literal string pattern search"
+                ))
                 .action(ArgAction::Set)
                 .num_args(1)
                 .value_name("NUMBER"),
