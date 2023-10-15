@@ -215,10 +215,20 @@ fn read_pipe() -> String {
 
 fn cut(input: String, selection: String) -> String {
     let selector = check_cut_selection(selection);
-
     let splitted_input: Vec<&str> = input.split_ascii_whitespace().collect();
 
-    assert!(splitted_input.len() as u32 > *selector.iter().max().unwrap());
+    let max_selection = *selector.iter().max().unwrap();
+    let len_input = splitted_input.len() as u32;
+    if len_input <= max_selection {
+        warn!(
+            "{}",
+            format!(
+                "Selection out of range\nSelection = '{}'\nLength of input = '{}'\nIndices start from '0' => Max Selection = '{}'",
+                max_selection, len_input, len_input - 1
+            )
+        );
+        process::exit(0);
+    }
 
     let mut cut_string: Vec<&str> = Vec::new();
 
