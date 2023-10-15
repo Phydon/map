@@ -169,7 +169,7 @@ fn manipulate_pipe() -> Command {
                     "{}\n{}\n{}",
                     "Select relevant parts from the input",
                     "Choose words by there indices",
-                    "Indices must be space separated"
+                    "Indices must be space separated and start from '0'"
                 ))
                 .arg_required_else_help(true)
                 .arg(
