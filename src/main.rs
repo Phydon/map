@@ -134,7 +134,7 @@ fn manipulate_pipe() -> Command {
             "MAnipulate Pipes", "Regex syntax:", "https://docs.rs/regex/latest/regex/#syntax"
         ))
         // TODO update version
-        .version("1.2.1")
+        .version("1.2.2")
         .author("Leann Phydon <leann.phydon@gmail.com>")
         .arg_required_else_help(true)
         .arg(
