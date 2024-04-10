@@ -14,13 +14,7 @@ use std::{
 fn main() {
     // handle Ctrl+C
     ctrlc::set_handler(move || {
-        println!(
-            "{} {} {} {}",
-            "Received Ctrl-C!".bold().red(),
-            "🤬",
-            "Exit program!".bold().red(),
-            "☠",
-        );
+        println!("{}", "Received Ctrl-C!".italic(),);
         process::exit(0)
     })
     .expect("Error setting Ctrl-C handler");
@@ -134,7 +128,7 @@ fn manipulate_pipe() -> Command {
             "MAnipulate Pipes", "Regex syntax:", "https://docs.rs/regex/latest/regex/#syntax"
         ))
         // TODO update version
-        .version("1.2.3")
+        .version("1.2.4")
         .author("Leann Phydon <leann.phydon@gmail.com>")
         .arg_required_else_help(true)
         .arg(
