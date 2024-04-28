@@ -45,8 +45,8 @@ fn main() {
 
     if let Some(subcmd) = matches.subcommand_matches("cut") {
         if let Some(arg) = subcmd.get_one::<String>("subarg") {
-            // read input from pipe
-            let input = read_pipe();
+            // read input from stdin
+            let input = read_stdin();
 
             let output = cut(input, arg.to_owned());
             println!("{}", output);
@@ -66,8 +66,8 @@ fn main() {
             }
         }
 
-        // read input from pipe
-        let input = read_pipe();
+        // read input from stdin
+        let input = read_stdin();
 
         if string_flag {
             // Treat the pattern as a literal string
@@ -100,6 +100,9 @@ fn main() {
             Some(("syntax", _)) => {
                 show_regex_syntax();
             }
+            Some(("examples", _)) => {
+                examples();
+            }
             _ => {
                 let _ = manipulate_pipe().print_help();
                 process::exit(0);
@@ -128,7 +131,7 @@ fn manipulate_pipe() -> Command {
             "MAnipulate Pipes", "Regex syntax:", "https://docs.rs/regex/latest/regex/#syntax"
         ))
         // TODO update version
-        .version("1.2.4")
+        .version("1.2.5")
         .author("Leann Phydon <leann.phydon@gmail.com>")
         .arg_required_else_help(true)
         .arg(
@@ -186,6 +189,11 @@ fn manipulate_pipe() -> Command {
                 ),
         )
         .subcommand(
+            Command::new("examples")
+                .long_flag("examples")
+                .about("Show examples"),
+        )
+        .subcommand(
             Command::new("log")
                 .short_flag('L')
                 .long_flag("log")
@@ -199,7 +207,7 @@ fn manipulate_pipe() -> Command {
         )
 }
 
-fn read_pipe() -> String {
+fn read_stdin() -> String {
     let mut input = io::stdin()
         .lock()
         .lines()
@@ -426,6 +434,47 @@ x     verbose mode, ignores whitespace and allow line comments (starting with `#
 [[:word:]]     word characters ([0-9A-Za-z_])
 [[:xdigit:]]   hex digit ([0-9A-Fa-f])        
         "###
+    );
+}
+
+fn examples() {
+    println!("\n{}\n----------", "Example 1".bold());
+    println!(
+        r###"
+$ echo 'Some pipe input' | map -s 'pipe input' 'stdin'
+Some stdin
+    "###
+    );
+
+    println!("\n{}\n----------", "Example 2".bold());
+    println!(
+        r###"
+$ echo 'This is Bob. Bob likes to change things for Bob' | map -n 2 Bob Alices
+This is Alices. Alices likes to change things for Bob    
+    "###
+    );
+
+    println!("\n{}\n----------", "Example 3".bold());
+    println!(
+        r###"
+$ sf "" . -e rs -p 
+~/example_dir/example_a.rs
+~/example_dir/example_b.rs
+~/example_dir/example_c.rs
+
+$ sf "" . -e rs -p | map '(?mR)(.+)\\(?<a>\w+)\.(?<b>\w+)$' '$a.$b'
+example_a.rs
+example_b.rs
+example_c.rs
+    "###
+    );
+
+    println!("\n{}\n----------", "Example 4".bold());
+    println!(
+        r###"
+$ echo 'This is Bob. Bob likes to change things for Bob' | map -c '3 4 7'
+Bob likes things
+    "###
     );
 }
 
